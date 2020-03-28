@@ -16,7 +16,12 @@ public class Labyrint {
 	public Liste<String> finnUtveiFra(int k, int r){
 		Liste<String> list = new Lenkeliste<String>();
 		ArrayList<String> visitedRutes = new ArrayList<String>();
-		Labyrint.getRute(k, r).finnUtvei(list);
+		if(Labyrint.getRute(k,r).tilTegn()=='.') {
+			Labyrint.getRute(k, r).finnUtvei(list);
+		}else {
+			System.out.println("Current start point is '#', choose again");
+		}
+		
 		//finnUtvei2(Labyrint.getRute(k, r), visitedRutes);
 		return list ;
 	}
