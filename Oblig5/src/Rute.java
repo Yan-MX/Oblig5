@@ -19,62 +19,77 @@ public abstract class Rute {
 		return "("+x+","+y+")";
 	}
 	public void gaa(Liste<String> n, String s, Rute past, Rute go, Rute stay) {
+//		System.out.println("GO ONCE");
+//		for (Rute i: golist) {
+//			System.out.print(i.coordinate());
+//			}
+//		System.out.println();
 		if(!(past==null)) {
 		s+=past.coordinate()+"--> ";
 		}
 		if(go.edge()&&go.tilTegn()=='.') {
 			s+=go.coordinate();
 			n.leggTil(s);
+			//golist.remove(go);
+			golist.clear();
+			System.out.println();
 			System.out.println("N: "+n);
 			System.out.println();
-			for (Rute i: golist) {
-				System.out.println(i.coordinate());}
-				golist.remove(go);
-			
+//			for (Rute i: golist) {
+//				System.out.println(i.coordinate());}
+//				golist.remove(go);
+			return;
 			
 		
 		}else {
 			if(go.getNord().tilTegn()=='.'&& go.getNord().equals(past)==false) {
-				System.out.println("THIS SHOULS OCCUS ONCE");
+//				for (Rute i: golist) {
+//					System.out.print(i.coordinate());
+//					}
+//				System.out.println();
+//				System.out.println("THIS SHOULS OCCUS ONCE");
 				if(golist.contains(go)&&golist.contains(stay.getNord())==false) {
-					for (Rute i: golist) {
-					System.out.println(i.coordinate());}
-					golist.remove(go);
-					
-					
+					System.out.println("Nord remove sucessful");
+//					golist.remove(go);
 				}else {
-				System.out.println("Snorth: "+s);
+//				System.out.println("Snorth: "+s);
 				past = go;
-				golist.add(go.getNord());
+				if (!golist.contains(go.getNord())){
+					golist.add(go.getNord());
+				}
 				gaa(n, s,past, past.getNord(),stay);
 				
 			}}
 			
-//			
-//			
-//			if(go.getSyd().tilTegn()=='.'&& go.getSyd().equals(past)==false) {
-//				
-//				if(golist.contains(go)&&golist.contains(stay.getSyd())==false) {
-//					golist.remove(go);
-//					
-//					
-//				}else {
+			
+			
+			if(go.getSyd().tilTegn()=='.'&& go.getSyd().equals(past)==false) {
+				
+			
+				if(golist.contains(go)&&golist.contains(stay.getSyd())==false) {
+					
+					
+				}else {
 //				System.out.println("Ssouth: "+s);
-//				past= go;
-//				golist.add(go.getSyd());
-//				gaa(n, s,past, past.getSyd(),stay);
-//					
-//				}}
+				past= go;
+				if (!golist.contains(go.getSyd())){
+					golist.add(go.getSyd());
+				}
+				gaa(n, s,past, past.getSyd(),stay);
+					
+				}}
 			
 			if(go.getVest().tilTegn()=='.'&& go.getVest().equals(past)==false) {
 				//System.out.println("enter west yes");
 				if(golist.contains(go)&&golist.contains(stay.getVest())==false) {
-					golist.remove(go);
+					
 					
 					
 				}else {
 				past = go;
+				if (!golist.contains(go.getVest())){
 				golist.add(go.getVest());
+				}
 				gaa(n, s,past, past.getVest(),stay);
 				
 			}}
@@ -93,12 +108,15 @@ public abstract class Rute {
 				}else {
 				//System.out.println("Seast: "+s);
 				past = go;
-				golist.add(go.getOst());
+				if (!golist.contains(go)){
+					golist.add(go.getOst());
+				}
 				gaa(n, s,past, past.getOst(),stay);
 				
 			}}
 			
-			}}
+			}
+	}
 		
 		
 		
@@ -108,7 +126,11 @@ public abstract class Rute {
 		Rute past= null;
 		Rute go = this;
 		this.gaa(t,s,past,go,go);
+		golist.clear();
+		System.out.println("Cleared golist");
 	}
+	
+	
 	public boolean edge() {
 		if(getX()==0 || getY()==0||getX()==getLabyrint().getColNum()-1|| getY()== getLabyrint().getRowNum()-1) {
 			return true;

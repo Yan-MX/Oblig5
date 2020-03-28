@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Labyrint {
 	private static Rute[][]maze;
@@ -14,7 +15,9 @@ public class Labyrint {
 	}
 	public Liste<String> finnUtveiFra(int k, int r){
 		Liste<String> list = new Lenkeliste<String>();
+		ArrayList<String> visitedRutes = new ArrayList<String>();
 		Labyrint.getRute(k, r).finnUtvei(list);
+		//finnUtvei2(Labyrint.getRute(k, r), visitedRutes);
 		return list ;
 	}
 	public static Labyrint lesFraFil(File fil) {
@@ -105,6 +108,58 @@ public class Labyrint {
 		return l1;
 		
 	}
+	
+	public boolean finnUtvei2(Rute rute, ArrayList<String> visitedRutes) {
+		boolean found = false;
+		int row = rute.getY();
+		int col = rute.getX();
+
+		// To avoid cycle
+		if (visitedRutes.contains(rute.coordinate())) {
+			visitedRutes.remove(rute.coordinate());
+			return false;
+		}
+
+		if (rute.edge()) {
+			if (rute.tilTegn() == '.')
+			{
+				visitedRutes.add(rute.coordinate());
+				return true;
+			}
+			else
+			{
+				visitedRutes.add(rute.coordinate());
+				return false;
+			}
+		}
+		
+		// Mark the rute as visited
+		visitedRutes.add(rute.coordinate());
+
+		Rute nordRute = Labyrint.getRute(col, row - 1);
+		Rute sydRute = Labyrint.getRute(col, row + 1);
+		Rute ostRute = Labyrint.getRute(col + 1, row);
+		Rute vestRute = Labyrint.getRute(col - 1, row);
+
+		System.out.println("position=>" + "(" + col + ":" + row + ")");
+
+		if (!visitedRutes.contains(nordRute.coordinate())) {
+			found = finnUtvei2(nordRute, visitedRutes);
+		}
+		if (!visitedRutes.contains(sydRute.coordinate())) {
+			found = finnUtvei2(sydRute, visitedRutes);
+		}
+		if (!visitedRutes.contains(ostRute.coordinate())) {
+			found = finnUtvei2(ostRute, visitedRutes);
+		}
+		if (!visitedRutes.contains(vestRute.coordinate())) {
+			found = finnUtvei2(vestRute, visitedRutes);
+		}
+		return found;
+	}
+	
+	
+	
 	//to update all the 'aapning' in the maze
 	private static Rute aapning(Rute rute) {
 		return new Aapning(rute.getX(),rute.getY(),'.',rute.getLabyrint());
