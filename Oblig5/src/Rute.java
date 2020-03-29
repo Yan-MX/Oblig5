@@ -6,7 +6,7 @@ public abstract class Rute {
 	private int x, y;
 	private char tegn;
 	private Labyrint la;
-	public List<Rute> currentRutelist = new ArrayList<Rute>();
+	private List<Rute> currentRutelist = new ArrayList<Rute>();
 
 	public Rute(int a, int b, char c, Labyrint g) {
 //		this x is actually colNum, y is actually a row num
@@ -22,7 +22,7 @@ public abstract class Rute {
 		return "(" + x + "," + y + ")";
 	}
 
-	public void gaa(Liste<String> n, String currentString, Rute previousRute, Rute currentRute, Rute OriginalRute, String previousString) {
+	public void gaa(Liste<String> n, String currentString, Rute previousRute, Rute currentRute, String previousString) {
 		if (!(previousRute == null)) {
 			previousString = currentString;
 			currentString += previousRute.coordinate() + "--> ";
@@ -31,86 +31,92 @@ public abstract class Rute {
 			previousString = currentString;
 			currentString += currentRute.coordinate();
 			n.leggTil(currentString);
+//			System.out.println("NEW STRING: " + currentString);
+//			System.out.println(" Right now the size of ruteliste" + currentRutelist.size());
+//			System.out.println();
+//			for (Rute i : currentRutelist) {
+//				System.out.print(i.coordinate());
+//			}
+//			System.out.println();
 			currentRutelist.remove(currentRute);
 			return;
 
 		} else {
 			if (currentRute.getNord().tilTegn() == '.' && currentRute.getNord().equals(previousRute) == false) {
-				if (currentRutelist.contains(currentRute.getNord()) && currentRutelist.contains(OriginalRute.getNord()) == false) {
-				} else {
+				//check if the rute is going to a old path that it has already been to
+				// if no, then add this Rute into the currentRudelist
+				// if yes, then it means the Rute has been here before and need to go one step back????
+				// when it goes to a dead end, this helps to go back to a next available intersection
+				if (!currentRutelist.contains(currentRute.getNord())) {
 					previousRute = currentRute;
-					if (!currentRutelist.contains(currentRute.getNord())) {
-						currentRutelist.add(currentRute.getNord());
-					}
-					gaa(n, currentString, previousRute, previousRute.getNord(), OriginalRute, previousString);
-					if (currentRute.getSyd().tilTegn() == '.' || currentRute.getVest().tilTegn() == '.' || currentRute.getOst().tilTegn() == '.') {
-
-					} else {
+					currentRutelist.add(currentRute.getNord());
+					gaa(n, currentString, previousRute, previousRute.getNord(),  previousString);
+					// check if this has a next, if not, then close this intersection, turn the sign into'#'
+					//if it has a next, then go to next direction
+					if(!CurrentRuteHasNext(currentRute)) {
+						
 						currentString = previousString;
+						currentRutelist.remove(currentRute);
+						currentRute.setTegn('#');
 					}
 				}
 			}
+			if (currentRute.getSyd().tilTegn() == '.' && currentRute.getSyd().equals(previousRute) == false) {
 
-		}
-
-		if (currentRute.getSyd().tilTegn() == '.' && currentRute.getSyd().equals(previousRute) == false) {
-
-			if (currentRutelist.contains(currentRute.getSyd()) && currentRutelist.contains(OriginalRute.getSyd()) == false) {
-
-			} else {
-				previousRute = currentRute;
 				if (!currentRutelist.contains(currentRute.getSyd())) {
+					previousRute = currentRute;
 					currentRutelist.add(currentRute.getSyd());
-				}
-				gaa(n, currentString, previousRute, previousRute.getSyd(), OriginalRute, previousString);
-				if (currentRute.getVest().tilTegn() == '.' || currentRute.getOst().tilTegn() == '.') {
-
-				} else {
-					currentString = previousString;
+					gaa(n, currentString, previousRute, previousRute.getSyd(),  previousString);
+					if(!CurrentRuteHasNext(currentRute)) {		
+						currentString = previousString;
+						currentRutelist.remove(currentRute);
+						currentRute.setTegn('#');
+					}
 				}
 			}
-		}
-
-		if (currentRute.getVest().tilTegn() == '.' && currentRute.getVest().equals(previousRute) == false) {
-			if (currentRutelist.contains(currentRute.getVest()) && currentRutelist.contains(OriginalRute.getVest()) == false) {
-
-			} else {
-				previousRute = currentRute;
+			if (currentRute.getVest().tilTegn() == '.' && currentRute.getVest().equals(previousRute) == false) {
 				if (!currentRutelist.contains(currentRute.getVest())) {
+					previousRute = currentRute;
 					currentRutelist.add(currentRute.getVest());
+					gaa(n, currentString, previousRute, previousRute.getVest(), previousString);
+					if(!CurrentRuteHasNext(currentRute)) {					
+						currentString = previousString;
+						currentRutelist.remove(currentRute);
+						currentRute.setTegn('#');
+					}
 				}
-				gaa(n, currentString, previousRute, previousRute.getVest(), OriginalRute, previousString);
-				if (currentRute.getOst().tilTegn() == '.') {
 
-				} else {
-					currentString = previousString;
-				}
 			}
-		}
-		// this is to check it is a hvitrute and check it is not the last stop we have
-		// been to
-		if (currentRute.getOst().tilTegn() == '.' && currentRute.getOst().equals(previousRute) == false) {
-			if (currentRutelist.contains(currentRute.getOst()) && currentRutelist.contains(OriginalRute.getOst()) == false) {
-
-			} else {
-				previousRute = currentRute;
+			if (currentRute.getOst().tilTegn() == '.' && currentRute.getOst().equals(previousRute) == false) {
 				if (!currentRutelist.contains(currentRute.getOst())) {
+					previousRute = currentRute;
 					currentRutelist.add(currentRute.getOst());
+					gaa(n, currentString, previousRute, previousRute.getOst(),  previousString);
+					if(!CurrentRuteHasNext(currentRute)) {
+					currentString = previousString;
+					currentRutelist.remove(currentRute);
+					currentRute.setTegn('#');
+					}
 				}
-				gaa(n, currentString, previousRute, previousRute.getOst(), OriginalRute, previousString);
-				currentString = previousString;
-
 			}
 		}
-
+		// kill and delete the dead end rute
+		currentRutelist.remove(currentRute);
 	}
-
+	public boolean CurrentRuteHasNext(Rute c) {
+		if (c.getSyd().tilTegn() == '.' || c.getVest().tilTegn() == '.'
+				|| c.getOst().tilTegn() == '.' || c.getNord().tilTegn() == '.') {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	public void finnUtvei(Liste<String> t) {
 		String currentString = "";
 		Rute previousRute = null;
 		Rute currentRute = this;
 		currentRutelist.add(currentRute);
-		this.gaa(t, currentString, previousRute, currentRute, currentRute, currentString);
+		this.gaa(t, currentString, previousRute, currentRute,  currentString);
 		currentRutelist.clear();
 	}
 
@@ -121,7 +127,6 @@ public abstract class Rute {
 		} else {
 			return false;
 		}
-
 	}
 
 	public Rute getNord() {

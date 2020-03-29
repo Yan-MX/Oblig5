@@ -33,10 +33,11 @@ class Oblig5 {
                 Liste<String> utveier = l.finnUtveiFra(startKol, startRad);
 //                System.out.println("here");
                 if (utveier.stoerrelse() != 0) {
-                	System.out.println("size of the list: "+utveier.stoerrelse());
+//                	System.out.println("size of the list: "+utveier.stoerrelse());
                     for (String s : utveier) {
                         System.out.println(s);
                     }
+                    System.out.println("size of the list: "+utveier.stoerrelse());
                 } else {
                     System.out.println("Ingen utveier.");
                 }

@@ -7,13 +7,19 @@ import java.util.ArrayList;
 public class Labyrint {
 	private static Rute[][]maze;
 	private int rowNum, colNum;
+	private static Labyrint copy;
 	private Labyrint(Rute[][]a, int b, int c){
 		setMaze(a);
 		rowNum = b;
 		colNum =c ;
 		
 	}
-	public Liste<String> finnUtveiFra(int k, int r){
+	public static Liste<String> finnUtveiFra(int k, int r){
+		if (copy != null)
+		{
+			maze = copy.getMaze();
+		}
+
 		Liste<String> list = new Lenkeliste<String>();
 		ArrayList<String> visitedRutes = new ArrayList<String>();
 		if(Labyrint.getRute(k,r).tilTegn()=='.') {
@@ -21,7 +27,7 @@ public class Labyrint {
 		}else {
 			System.out.println("Current start point is '#', choose again");
 		}
-		
+		//Labyrint.maze = copy.maze;		;
 		//finnUtvei2(Labyrint.getRute(k, r), visitedRutes);
 		return list ;
 	}
@@ -70,7 +76,9 @@ public class Labyrint {
 			}
 		}
 		//update all the four neighbours 
-		return 	updateNeighbour(ly1);
+		ly1 = updateNeighbour(ly1);
+		copy= ly1;
+		return 	ly1;
 	}
 	public static Labyrint updateNeighbour(Labyrint l1) {
 		for(int i= 0; i<l1.getRowNum();i++) {
