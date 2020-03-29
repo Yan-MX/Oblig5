@@ -115,7 +115,6 @@ public class Labyrint {
 	}
 	
 	public boolean finnUtvei2(Rute rute, ArrayList<String> visitedRutes) {
-		boolean found = false;
 		int row = rute.getY();
 		int col = rute.getX();
 
@@ -140,6 +139,7 @@ public class Labyrint {
 		
 		// Mark the rute as visited
 		visitedRutes.add(rute.coordinate());
+		//path.add(new Coordinate(row, col));
 
 		Rute nordRute = Labyrint.getRute(col, row - 1);
 		Rute sydRute = Labyrint.getRute(col, row + 1);
@@ -148,19 +148,21 @@ public class Labyrint {
 
 		System.out.println("position=>" + "(" + col + ":" + row + ")");
 
-		if (!visitedRutes.contains(nordRute.coordinate())) {
-			found = finnUtvei2(nordRute, visitedRutes);
+		if (finnUtvei2(nordRute, visitedRutes)) {
+			return true;
 		}
-		if (!visitedRutes.contains(sydRute.coordinate())) {
-			found = finnUtvei2(sydRute, visitedRutes);
+		if (finnUtvei2(sydRute, visitedRutes)) {
+			return true;
 		}
-		if (!visitedRutes.contains(ostRute.coordinate())) {
-			found = finnUtvei2(ostRute, visitedRutes);
+		if (finnUtvei2(ostRute, visitedRutes)) {
+			return true;
 		}
-		if (!visitedRutes.contains(vestRute.coordinate())) {
-			found = finnUtvei2(vestRute, visitedRutes);
+		if (finnUtvei2(vestRute, visitedRutes)) {
+			return true;
 		}
-		return found;
+		//path.remove(path.size() - 1);
+		return false;
+		
 	}
 	
 	
